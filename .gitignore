@@ -1,0 +1,10 @@
+.DS_Store
+.dropbox
+*.elc
+*.pyc
+*~
+*.db
+*.egg-info
+dist/*
+build/*
+docs/_build/*
