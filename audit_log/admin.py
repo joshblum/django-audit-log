@@ -2,7 +2,6 @@ from django.db import models
 
 from django.contrib import admin
 
-
 def reg_admin():
     for model in models.get_models():
         if _check_name(model):

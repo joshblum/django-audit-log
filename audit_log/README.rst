@@ -29,7 +29,7 @@ indicating this with the state of the model before it was deleted.
 What It Doesn't Do
 ----------------------------
 
-The audit log bootstraps itself on each POST, PUT or DELETE request. So it
+The audit log bootstraps itself on each GET, POST, PUT or DELETE request. So it
 can only track changes to model instances when they are
 made via the web interface of your application. Note: issuing a delete in a PUT
 request will work without a problem (but don't do that). Saving
