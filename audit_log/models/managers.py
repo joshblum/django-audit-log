@@ -4,9 +4,7 @@ from django.db import models
 from django.utils.functional import curry
 from django.utils.translation import ugettext_lazy as _
 
-
-
-from audit_log.models.fields import LastUserField
+from audit_log.models.fields import *
 
 class LogEntryObjectDescriptor(object):
     def __init__(self, model):
@@ -20,7 +18,7 @@ class LogEntryObjectDescriptor(object):
         
       
 class AuditLogManager(models.Manager):
-    def __init__(self, model, instance = None):
+    def __init__(self, model, instance=None):
         super(AuditLogManager, self).__init__()
         self.model = model
         self.instance = instance
@@ -47,35 +45,37 @@ class AuditLog(object):
     
     manager_class = AuditLogManager
     
-    def __init__(self, exclude = []):
+    def __init__(self, exclude=[]):
         self._exclude = exclude
     
     def contribute_to_class(self, cls, name):
         self.manager_name = name
-        models.signals.class_prepared.connect(self.finalize, sender = cls)
-    
+        models.signals.class_prepared.connect(self.finalize, sender=cls)
     
     def create_log_entry(self, instance, action_type):
         manager = getattr(instance, self.manager_name)
         attrs = {}
+
         for field in instance._meta.fields:
             if field.attname not in self._exclude:
                 attrs[field.attname] = getattr(instance, field.attname)
-        manager.create(action_type = action_type, **attrs)
+        manager.create(action_type=action_type, **attrs)
     
     def post_save(self, instance, created, **kwargs):
         self.create_log_entry(instance, created and 'I' or 'U')
     
-    
     def post_delete(self, instance, **kwargs):
         self.create_log_entry(instance,  'D')
-    
+
+    def post_get(self, instance, **kwargs):
+        self.create_log_entry(instance, 'G')
     
     def finalize(self, sender, **kwargs):
         log_entry_model = self.create_log_entry_model(sender)
         
-        models.signals.post_save.connect(self.post_save, sender = sender, weak = False)
-        models.signals.post_delete.connect(self.post_delete, sender = sender, weak = False)
+        models.signals.post_save.connect(self.post_save, sender=sender, weak=False)
+        models.signals.post_delete.connect(self.post_delete, sender=sender, weak=False)
+        models.signals.post_get.connect(self.post_get, sender=sender, weak=False)
         
         descriptor = AuditLogDescriptor(log_entry_model, self.manager_class)
         setattr(sender, self.manager_name, descriptor)
@@ -117,8 +117,6 @@ class AuditLog(object):
                 
                 if field.rel and field.rel.related_name:
                     field.rel.related_name = '_auditlog_%s' % field.rel.related_name
-            
-
                 
                 fields[field.name] = field
             
@@ -135,37 +133,32 @@ class AuditLog(object):
         
         def entry_instance_to_unicode(log_entry):
             try:
-                result = u'%s: %s %s at %s'%(model._meta.object_name, 
-                                                log_entry.object_state, 
-                                                log_entry.get_action_type_display().lower(),
-                                                log_entry.action_date,
-                                                
-                                                )
+                result = u'%s: %s %s at %s'%(model._meta.object_name, log_entry.object_state, log_entry.get_action_type_display().lower(), log_entry.action_date,)
             except AttributeError:
-                result = u'%s %s at %s'%(model._meta.object_name,
-                                                log_entry.get_action_type_display().lower(),
-                                                log_entry.action_date
-                                                
-                                                )
+                result = u'%s %s at %s'%(model._meta.object_name,log_entry.get_action_type_display().lower(), log_entry.action_date)
             return result
         
         return {
-            'action_id' : models.AutoField(primary_key = True),
-            'action_date' : models.DateTimeField(default = datetime.datetime.now),
-            'action_user' : LastUserField(related_name = rel_name),
-            'action_type' : models.CharField(max_length = 1, choices = (
+            'action_id' : models.AutoField(primary_key=True),
+            'action_date' : models.DateTimeField(default=datetime.datetime.now),
+            'action_user' : LastUserField(related_name=rel_name),
+            'action_type' : models.CharField(max_length=1, choices=(
                 ('I', _('Created')),
                 ('U', _('Changed')),
                 ('D', _('Deleted')),
+                ('G', _('Read')),
             )),
             'object_state' : LogEntryObjectDescriptor(model),
+            'action_ip' : LastIPField(),
+            'action_referrer' : LastReferrerField(),
+            'action_user_agent' : LastUserAgentField(),
             '__unicode__' : entry_instance_to_unicode,
         }
             
     
     def get_meta_options(self, model):
         """
-        Returns a dictionary of fileds that will be added to
+        Returns a dictionary of fields that will be added to
         the Meta inner class of the log entry model.
         """
         return {
@@ -181,7 +174,7 @@ class AuditLog(object):
         
         attrs = self.copy_fields(model)
         attrs.update(self.get_logging_fields(model))
-        attrs.update(Meta = type('Meta', (), self.get_meta_options(model)))
+        attrs.update(Meta=type('Meta', (), self.get_meta_options(model)))
         name = '%sAuditLogEntry'%model._meta.object_name
         return type(name, (models.Model,), attrs)
         
