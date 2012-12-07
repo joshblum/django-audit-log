@@ -7,7 +7,7 @@ Introduction
 Important note
 ----------------------------
 
-This version of `djnago-audit-log` requires a modified version of the [Django Framework](https://www.djangoproject.com/) to run properly. This can be installed by running
+This version of `djnago-audit-log` requires a modified version of the [Django Framework](https://github.com/joshblum/django-with-audit.gi) to run properly. This can be installed by running
 
     pip install -e git+https://github.com/joshblum/django-with-audit.git#egg=django
 
