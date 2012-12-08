@@ -54,12 +54,11 @@ class UserLoggingMiddleware(object):
         fields = [(ip, fields.LastIPField)]
 
         request = request.META
-        
+
         for field in request:
             if field in REQUEST_FIELDS:
                 arg = request[field]
                 fields.append((arg, REQUEST_FIELDS[field]))
-        
 
         return fields
 
@@ -70,9 +69,3 @@ class UserLoggingMiddleware(object):
         else:
             ip = request.META.get('REMOTE_ADDR')
         return ip
-
-
-
-
-
-    
