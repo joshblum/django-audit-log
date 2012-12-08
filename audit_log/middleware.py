@@ -8,7 +8,7 @@ import json
 
 VALID_METHODS = {'GET':'', 'POST':'', 'PUT':'', 'DELETE':''}
 REQUEST_FIELDS = {
-    'HTTP_REFERER':fields.LastReferrerField, 
+    'HTTP_REFERER': fields.LastReferrerField, 
     'HTTP_USER_AGENT': fields.LastUserAgentField,
     }
 
@@ -51,16 +51,16 @@ class UserLoggingMiddleware(object):
         Takes a request object and returns the dictionary items we want to store.
         """
         ip = self._get_client_ip(request)
-        fields = [(ip, fields.LastIPField)]
+        res = [(ip, fields.LastIPField)]
 
         request = request.META
 
         for field in request:
             if field in REQUEST_FIELDS:
                 arg = request[field]
-                fields.append((arg, REQUEST_FIELDS[field]))
+                res.append((arg, REQUEST_FIELDS[field]))
 
-        return fields
+        return res
 
     def _get_client_ip(self, request):
         x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')

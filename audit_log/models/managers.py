@@ -152,6 +152,7 @@ class AuditLog(object):
             'action_ip' : LastIPField(),
             'action_referrer' : LastReferrerField(),
             'action_user_agent' : LastUserAgentField(),
+            'is_new' : models.BooleanField(default=True),
             '__unicode__' : entry_instance_to_unicode,
         }
             

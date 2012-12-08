@@ -137,4 +137,5 @@ The querysets yielded by `AuditLog` managers are querysets for models  of type `
     * `action_ip` - The IP address of the request perform the logged action.
     * `action_referrer` - The HTTP-Referrer of the request perform the logged action.
     * `action_user_agent` - The User-Agent of the request perform the logged action.
+    * `is_new` - Boolean indicating whether the object has been viewed before.
     *  `object_state` Any field of the original `X` model that is tracked by the audit log.
