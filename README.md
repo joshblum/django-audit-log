@@ -130,12 +130,12 @@ Instances of `AuditLog` behave like django model managers and can be queried in 
 
 The querysets yielded by `AuditLog` managers are querysets for models  of type `[X]AuditLogEntry`, where X is the tracked model class. An instance of `XAuditLogEntry` represents a log entry for a particular model instance and will have the following fields that are of relevance:
 
-    * `action_id` - Primary key for the log entry.
-    * `action_date` - The point in time when the logged action was performed.
-    * `action_user` - The user that performed the logged action.
-    * `action_type` - The type of the action (Created/Changed/Deleted/Read)
-    * `action_ip` - The IP address of the request perform the logged action.
-    * `action_referrer` - The HTTP-Referrer of the request perform the logged action.
-    * `action_user_agent` - The User-Agent of the request perform the logged action.
-    * `is_new` - Boolean indicating whether the object has been viewed before.
-    *  `object_state` Any field of the original `X` model that is tracked by the audit log.
+* `action_id` - Primary key for the log entry.
+* `action_date` - The point in time when the logged action was performed.
+* `action_user` - The user that performed the logged action.
+* `action_type` - The type of the action (Created/Changed/Deleted/Read)
+* `action_ip` - The IP address of the request perform the logged action.
+* `action_referrer` - The HTTP-Referrer of the request perform the logged action.
+* `action_user_agent` - The User-Agent of the request perform the logged action.
+* `is_new` - Boolean indicating whether the object has been viewed before.
+*  `object_state` Any field of the original `X` model that is tracked by the audit log.
