@@ -54,6 +54,15 @@ class DefaultAuditAdmin(admin.ModelAdmin):
         if r.groups():
             res = r.groups()[0]
         return res
+    
+    def action_get_params_friendly(self, obj):
+        return obj.action_get_params
+
+    def action_post_params_friendly(self, obj):
+        return obj.action_post_params
+
+    def action_request_url_friendly(self, obj):
+        return obj.action_request_url
 
     action_date_friendly.allow_tags = True
     action_date_friendly.short_description = 'Timestamp'
@@ -66,15 +75,16 @@ class DefaultAuditAdmin(admin.ModelAdmin):
     action_ip_friendly.allow_tags = True
     action_ip_friendly.short_description = 'IP Address'
 
-    action_referrer_friendly.short_description = 'Referrer'
-
+    action_request_url_friendly.short_description = 'URL'
     action_user_agent_friendly.short_description = 'User Agent'
+    action_get_params_friendly.short_description = 'GET'
+    action_post_params_friendly.short_description = 'POST'
         
-    list_display = ('action_user_friendly', 'action_type_friendly', 'action_ip_friendly', 'action_referrer_friendly', 'action_user_agent_friendly', 'action_date_friendly')
+    list_display = ('action_user_friendly', 'action_type_friendly', 'action_ip_friendly', 'action_request_url_friendly', 'action_user_agent_friendly', 'action_get_params_friendly', 'action_post_params_friendly', 'action_date_friendly')
 
     list_display_links = ('action_date_friendly',)
 
-    search_fields = ('action_user__username', 'action_referrer', 'action_ip', 'action_date', 'action_user_agent')
+    search_fields = ('action_user__username', 'action_referrer', 'action_ip', 'action_date', 'action_user_agent', 'action', 'action_get_params_friendly', 'action_post_params_friendly',)
     list_filter = ('action_type',)
     ordering = ['-action_date']
 

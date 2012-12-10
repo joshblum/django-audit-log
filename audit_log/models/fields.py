@@ -41,3 +41,15 @@ class LastReferrerField(LastRequestField):
 class LastUserAgentField(LastRequestField):
     def __init__(self, **kwargs):
         super(LastUserAgentField, self).__init__(**kwargs)
+
+class LastGetParamsField(LastRequestField):
+    def __init__(self, **kwargs):
+        super(LastGetParamsField, self).__init__(**kwargs)
+
+class LastPostParamsField(LastRequestField):
+    def __init__(self, **kwargs):
+        super(LastPostParamsField, self).__init__(**kwargs)
+
+class LastRequestURLField(LastRequestField):
+    def __init__(self, **kwargs):
+        super(LastRequestURLField, self).__init__(**kwargs)

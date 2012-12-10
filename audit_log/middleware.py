@@ -50,16 +50,17 @@ class UserLoggingMiddleware(object):
         """
         Takes a request object and returns the dictionary items we want to store.
         """
-        ip = self._get_client_ip(request)
-        res = [(ip, fields.LastIPField)]
+        res = [
+            (self._get_client_ip(request), fields.LastIPField), 
+            (request.path, fields.LastRequestURLField),
+            (request.GET, fields.LastGetParamsField),
+            (request.POST, fields.LastPostParamsField),
+        ]
 
         request = request.META
-
         for field in request:
             if field in REQUEST_FIELDS:
                 arg = request[field]
-                res.append((arg, REQUEST_FIELDS[field]))
-
         return res
 
     def _get_client_ip(self, request):
