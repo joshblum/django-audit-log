@@ -53,8 +53,8 @@ class UserLoggingMiddleware(object):
         res = [
             (self._get_client_ip(request), fields.LastIPField), 
             (request.path, fields.LastRequestURLField),
-            (request.GET, fields.LastGetParamsField),
-            (request.POST, fields.LastPostParamsField),
+            (request.GET.items(), fields.LastGetParamsField),
+            (request.POST.items(), fields.LastPostParamsField),
         ]
 
         request = request.META
