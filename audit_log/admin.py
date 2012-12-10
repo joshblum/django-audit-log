@@ -24,7 +24,7 @@ class DefaultAuditAdmin(admin.ModelAdmin):
 
     def action_user_friendly(self, obj):
         user = obj.action_user
-        search_by_user = '<a href="?q=%s">%s</a>' % (user, user)
+        search_by_user = '<a href="%s">%s</a>' % (user, user)
         return search_by_user
 
     def action_type_friendly(self, obj):
@@ -84,7 +84,7 @@ class DefaultAuditAdmin(admin.ModelAdmin):
 
     list_display_links = ('action_date_friendly',)
 
-    search_fields = ('action_user__username', 'action_referrer', 'action_ip', 'action_date', 'action_user_agent', 'action', 'action_get_params_friendly', 'action_post_params_friendly',)
+    search_fields = ('action_user__username', 'action_referrer', 'action_ip', 'action_date', 'action_user_agent', 'action_request_url', 'action_get_params', 'action_post_params',)
     list_filter = ('action_type',)
     ordering = ['-action_date']
 
