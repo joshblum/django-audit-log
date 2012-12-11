@@ -61,6 +61,7 @@ class UserLoggingMiddleware(object):
         for field in request:
             if field in REQUEST_FIELDS:
                 arg = request[field]
+                res.append((arg, REQUEST_FIELDS[field]))
         return res
 
     def _get_client_ip(self, request):
