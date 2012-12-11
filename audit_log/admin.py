@@ -48,7 +48,6 @@ class DefaultAuditAdmin(admin.ModelAdmin):
         return obj.action_referrer
 
     def action_user_agent_friendly(self, obj):
-        print obj.action_user_agent
         regex = re.compile("\((.*?)\)", re.IGNORECASE)
         r = regex.search(str(obj.action_user_agent))
         res = None
